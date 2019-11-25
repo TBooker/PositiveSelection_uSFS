@@ -1,0 +1,10 @@
+# each parameter is preceded by a flag; 0: estimate; 1: fix
+
+# Applicable to either model B or C, do not estimate the ancestral error, but do estiamte everything else.
+# The staring parameter for advantageous mutations is 1234 to make sure that polyDFE expands the search space for beneficial mutation parameters
+#ID   eps an    eps cont  lambda    theta bar  a     S d      b      p b       S b      r (at least #groups-1 of them)
+2     1 0.00    1 0.00    0 0.005   0 0.001    0 2   0 -2000   0 0.3  0 0.00005       0 1234      0  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+# Use 666 as the starting Sb
+3     1 0.00    1 0.00    0 0.005   0 0.001    0 2   0 -2000   0 0.3  0 0.00005       0 666      0  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+

@@ -1,0 +1,91 @@
+initialize() {
+	defineConstant("N", 2500);
+
+ // These are the arguments that  I'll specify from the command line 
+
+//	defineConstant("selStrength", 10); // 2Nes
+//	defineConstant("pA", 0.01);
+//	defineConstant("REP", 1);
+	defineConstant("dist", 'f');
+
+	initializeMutationRate(0.01/(4*N));
+	
+
+	// m1 mutation type: neutral
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	// m2 mutation type: deleterious
+	initializeMutationType("m2", 0.5, "g", -2000/(2*N), 0.3);
+	// m3 mutation type: advantageous
+	initializeMutationType("m3", 0.5, dist, selStrength/(2*N));
+	
+
+	// g1 genomic element type: uses m1 for all mutations
+	initializeGenomicElementType("g1", c(m1,m2,m3), c((1/3),(2/3)*(1-pA), (2/3)*pA));
+	
+
+	// uniform chromosome
+	initializeGenomicElement(g1, 1000, 1299);
+	initializeGenomicElement(g1, 1400, 1699);
+	initializeGenomicElement(g1, 1800, 2099);
+	initializeGenomicElement(g1, 2200, 2499);
+	initializeGenomicElement(g1, 2600, 2899);
+
+	initializeGenomicElement(g1, 11000, 11299);
+	initializeGenomicElement(g1, 11400, 11699);
+	initializeGenomicElement(g1, 11800, 12099);
+	initializeGenomicElement(g1, 12200, 12499);
+	initializeGenomicElement(g1, 12600, 12899);
+
+	initializeGenomicElement(g1, 21000, 21299);
+	initializeGenomicElement(g1, 21400, 21699);
+	initializeGenomicElement(g1, 21800, 22099);
+	initializeGenomicElement(g1, 22200, 22499);
+	initializeGenomicElement(g1, 22600, 22899);
+
+	initializeGenomicElement(g1, 31000, 31299);
+	initializeGenomicElement(g1, 31400, 31699);
+	initializeGenomicElement(g1, 31800, 32099);
+	initializeGenomicElement(g1, 32200, 32499);
+	initializeGenomicElement(g1, 32600, 32899);
+
+	initializeGenomicElement(g1, 41000, 41299);
+	initializeGenomicElement(g1, 41400, 41699);
+	initializeGenomicElement(g1, 41800, 42099);
+	initializeGenomicElement(g1, 42200, 42499);
+	initializeGenomicElement(g1, 42600, 42899);
+
+	initializeGenomicElement(g1, 51000, 51299);
+	initializeGenomicElement(g1, 51400, 51699);
+	initializeGenomicElement(g1, 51800, 52099);
+	initializeGenomicElement(g1, 52200, 52499);
+	initializeGenomicElement(g1, 52600, 52899);
+
+	initializeGenomicElement(g1, 61000, 61299);
+	initializeGenomicElement(g1, 61400, 61699);
+	initializeGenomicElement(g1, 61800, 62099);
+	initializeGenomicElement(g1, 62200, 62499);
+	initializeGenomicElement(g1, 62600, 62899);
+	initializeGenomicElement(g1, 63899, 63899);
+	
+
+	initializeRecombinationRate(0.01/(4*N));
+}
+
+// create a population of N individuals
+1 {
+	sim.addSubpop("p1", N);
+}
+
+// output samples of 10 genomes periodically, all fixed mutations at end
+
+//85000 late() {
+//	outString = selStrength + '_' + pA + '_T1_' + REP +'_' + dist;
+//	sim.outputFixedMutations( filePath = outString + '.fixed.txt');
+//	p1.outputVCFSample(50, filePath = outString + '.vcf');
+//	}
+
+135000 late() {
+	outString = selStrength + '_' + pA + '_' + REP +'_' + dist;
+	sim.outputFixedMutations( filePath = outString + '.fixed.txt');
+	p1.outputVCFSample(50, filePath = outString + '.vcf');
+	}
