@@ -1,10 +1,10 @@
 # Estimating the strength of positive selection from the unfolded site frequency spectrum (uSFS)
 
-This repository contains the scripts, SLiM configuration files and processed data from a small study I did on estiamting the parameters of positive selection from the unfolded site frequency spectrum.
+This repository contains the scripts, SLiM configuration files and processed data from a small study I did on estimating the parameters of positive selection from the unfolded site frequency spectrum. This work has been published in G3 (https://doi.org/10.1534/g3.120.401052)
 
 I based the simulations on those performed by Campos and Charlesworth (2019 - Genetics), where they simulated positive and negatively selected mutations occurring in the exons of protein-coding genes. The SLiM configuration file that performs the simulation is [configs/single_class.slim](here)
 
-I ran a large number of replicate simulations on a cluster that uses the SLURM scheculing system. I wrote an array-job submission script that looked like:
+I ran a large number of replicate simulations on a cluster that uses the SLURM scheculing system. I wrote an array-job submission script that looked like this:
 
 ```
 #!/bin/bash
@@ -20,7 +20,7 @@ I ran a large number of replicate simulations on a cluster that uses the SLURM s
 ~/bin/build/slim -d selStrength=1000 -d pA=0.001  -d REP=$SLURM_ARRAY_TASK_ID ~/projects/def-whitlock/booker/uSFS_positiveSelection/configs/single_class.slim
 ~/bin/build/slim -d selStrength=1000 -d pA=0.0001  -d REP=$SLURM_ARRAY_TASK_ID ~/projects/def-whitlock/booker/uSFS_positiveSelection/configs/single_class.slim
 ```
-I specify the variable parameters for SLiM at the command line (i.e. selStrength and pA), and run 2000 replicates for each parameter set. 
+I specify the variable parameters for SLiM at the command line (i.e. selStrength and pA), and run 2000 replicates for each parameter set. There are seven simulated genes in each dataset, representing a genome with 14,000 protein-coding genes. The method I used to analsyse the uSFS (```polyDFE```), and other methods such as ```DFE-alpha``` assume that sites are independant. We know that that is biologically incorrect, selection at linked sites is probably ubiquitous and affects the SFS for all sites in the genome. However, to my knowledge, there is currently no likelihood function for the expected SFS under the combined effects of direct selection, selection at linked sites, historical population size variation and polarization error that could be used to analyse  
 
 With the resulting datafiles, I collated the substitutions and variable sites into a uSFS for simulated synonymous and nonsynonymous sites. I then collated the resulting uSFS data and bootstrapped using the following command:
 
