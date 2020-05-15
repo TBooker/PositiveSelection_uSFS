@@ -12,7 +12,7 @@ TommyTheme<-  theme_bw()+
     axis.text.x =  element_text(size = 10, color = 'black'),
     legend.text = element_text(size = 10, color = 'black'),
     axis.title.x = element_text(size = 15, color = 'black'),
-    axis.title.y = element_text(size = 15,  vjust = 0.8, , hjust = 0.5, color = 'black'),
+    axis.title.y = element_text(size = 15,  vjust = 0.8, hjust = 0.5, color = 'black'),
     strip.text = element_text(size = 15, color = 'black'),
     panel.grid = element_blank(),         # All grid lines
     panel.grid.major = element_blank(),   # Major grid lines
@@ -89,11 +89,14 @@ hitsWithout$divergence <- 'Without Divergence'
 
 
 grid_Nes100 <- rbind(gridWith, gridWithout)
+summary(as.factor(grid_Nes100$pa_est))
+
 grid_Nes100 <- grid_Nes100[log10(grid_Nes100$delt_lnL)!=-Inf,]
 hits_Nes100 <- rbind(hitsWith, hitsWithout)
+
 grid_Nes100$params <- 'Nes100'
 hits_Nes100$params <- 'Nes100'
-
+max(grid_Nes100$Sb_est)
 
 Nes100 <- ggplot(data = grid_Nes100, aes(x = pa_est, y = Sb_est, col = log10(delt_lnL)))+
   geom_point(shape = 15,size=3)+
@@ -153,7 +156,10 @@ Nes10 <- ggplot(data = grid_Nes10, aes(x = pa_est, y = Sb_est, col = log10(delt_
 surface <-ggarrange(Nes1000,Nes100, Nes10, common.legend = TRUE, labels = 'AUTO', legend = 'bottom', ncol = 3, nrow = 1)
 surface
 
-pdf('~/work/uSFS_positiveSelection/simulations/surfacePlot.pdf', width = 11, height =6)
+pdf('~/work/uSFS_positiveSelection/Plots/surfacePlot.pdf', width = 11, height =6)
 print(surface)
 dev.off()
 
+tiff('~/work/uSFS_positiveSelection/Plots/surfacePlot.tiff', width = 11, height =6, res = 300, units = "in")
+print(surface)
+dev.off()

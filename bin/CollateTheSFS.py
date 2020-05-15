@@ -112,7 +112,7 @@ def combineGenes(genes, path, label, polyDFE = True, SFS = False):
 
 
 def main():
-	parser = argparse.ArgumentParser(description="Make collated site frequency spectra from the picke jar ")
+	parser = argparse.ArgumentParser(description="Make collated site frequency spectra from the pickel jar ")
 	parser.add_argument("-i", 
 			required = True,
 			dest = "input",

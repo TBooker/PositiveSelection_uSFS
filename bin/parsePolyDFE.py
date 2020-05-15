@@ -10,14 +10,17 @@ def parsepolyDFE(input):
 #	print input, len(data)
 	if len(data) < 100:	return
 	lnL = [i for i in data if i.startswith('---- Best joint')][0].split(' ')[5]
+	gradient = [i for i in data if i.startswith('---- Best joint')][0].split(' ')[8]
 
-	if input.split('.')[-2] == 'dDFE':
-		results = data[data.index('--  Model: C')+1 : data.index('--  Model: C')+5]
+	if input.split('.')[-3] == 'dDFE':
+		results = data[data.index('--  Model: B')+1 : data.index('--  Model: B')+5]
 	else:
 		results = data[data.index('--  Model: B')+1 : data.index('--  Model: B')+5]
 
 	retDict = {}
 	retDict['lnL'] = float(lnL)
+	retDict['gradient'] = float(gradient)
+
  	for i,j in zip(results[2].split(), results[3].split()):
  		if i == '--': continue
  
@@ -52,6 +55,8 @@ def getBootRanges(df, taxa):
 		new.append( temp )
 	if 'LRT' in list(df): 
 		for i in ['LRT']:
+			temp = OrderedDict() 
+
 			prop_sig = float(sum(df[i] < 0.05))/ len(df[i])
 		
 			temp['taxa'] = taxa
@@ -59,7 +64,44 @@ def getBootRanges(df, taxa):
 			temp['lower'] = prop_sig
 			temp['median'] = prop_sig
 			temp['upper'] = prop_sig
+			new.append( temp )
+	
+	if 'gradient' in list(df): 
+		for i in ['gradient_l1']:
+			if i == 'gradient_l1':
+				prop_passed = float(sum(df['gradient'] < 1))/ len(df['gradient'])
+			elif i == 'gradient_l0.1':
+				prop_passed = float(sum(df['gradient'] < 0.1))/ len(df['gradient'])
+			temp = OrderedDict() 
 		
+			temp['taxa'] = taxa
+			temp['stat'] = i
+			temp['lower'] = prop_passed
+			temp['median'] = prop_passed
+			temp['upper'] = prop_passed
+			new.append( temp )
+
+	if 'gradient' in list(df): 
+		for i in ['gradient_l0.1']:
+			prop_passed = float(sum(df['gradient'] < 0.1))/ len(df['gradient'])
+			temp = OrderedDict() 
+			temp['taxa'] = taxa
+			temp['stat'] = i
+			temp['lower'] = prop_passed
+			temp['median'] = prop_passed
+			temp['upper'] = prop_passed
+			new.append( temp )
+
+	if 'gradient' in list(df): 
+		for i in ['gradient_l0.01']:
+			prop_passed = float(sum(df['gradient'] < 0.01))/ len(df['gradient'])
+			temp = OrderedDict() 
+			temp['taxa'] = taxa
+			temp['stat'] = i
+			temp['lower'] = prop_passed
+			temp['median'] = prop_passed
+			temp['upper'] = prop_passed
+			new.append( temp )
 	new_df = pd.DataFrame(new)
 
 	return new_df
@@ -88,8 +130,8 @@ def main():
 	args = parser.parse_args()
 
 	if args.NoAdv:
-		searchString_nDiv = args.input+'/*T1.nDiv.dDFE.output'
-		searchString_wDiv = args.input+'/*T1.wDiv.dDFE.output'
+		searchString_nDiv = args.input+'/*T1.nDiv.dDFE.B.output'
+		searchString_wDiv = args.input+'/*T1.wDiv.dDFE.B.output'
 	else:
 		searchString_nDiv = args.input+'/*T1.nDiv.Be.output'
 		searchString_wDiv = args.input+'/*T1.wDiv.Be.output'
@@ -97,9 +139,10 @@ def main():
 
 	allBoots_without = []
 	for i in glob.glob(searchString_nDiv):
+			print(i)
 			if not args.NoAdv:
 				name = 'adv'
-				noAdv =  i.split('v.B')[0] + 'v.dDFE.output'
+				noAdv =  i.split('v.B')[0] + 'v.dDFE.B.output'
 				print i.split('v.o')[0], noAdv
 				tempNoAdv = parsepolyDFE(noAdv)
 				if not tempNoAdv: continue
@@ -125,7 +168,7 @@ def main():
 	for i in glob.glob(searchString_wDiv):
 			if not args.NoAdv:
 				name = 'adv'
-				noAdv =  i.split('v.B')[0] + 'v.dDFE.output'
+				noAdv =  i.split('v.B')[0] + 'v.dDFE.B.output'
 				tempNoAdv = parsepolyDFE(noAdv)
 				if not tempNoAdv: continue
 			else:
@@ -144,12 +187,12 @@ def main():
 			allBoots_with.append( pd.DataFrame.from_dict(temp) )
 
 	DFE_with = pd.concat(allBoots_with).sort_values('ID', ascending=1)
-	print DFE_with
+	DFE_with.to_csv('TEMP', index = False)
 	
 	DFE_without = pd.concat(allBoots_without).sort_values('ID', ascending=1)
 	
 	output_1 = getBootRanges( DFE_with , 'withD')
-
+	
 	output_2 = getBootRanges( DFE_without , 'noD')
 
 	listy =  args.input.split('_')
@@ -163,7 +206,7 @@ def main():
 	output['pA'] = pA
 	output['n'] = n
 
-	if not args.NoAdv:
+	if args.NoAdv:
 		output['name'] = 'dDFE'
 	else:
 		output['name'] = 'full_DFE'
